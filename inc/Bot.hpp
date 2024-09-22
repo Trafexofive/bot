@@ -20,9 +20,12 @@
 class Bot {
 private:
     int _clientFdSocket;
+    int _port;
     std::string _botName;
     std::string _ip;
     std::string _channelName;
+    std::string _password;
+    std::string _server_address;
 
 public:
     Bot();
@@ -39,6 +42,7 @@ public:
 
     // Bot-specific methods
     bool connectToServer(const std::string& address, int port, const std::string& password);
+    bool connectToServer();
     void disconnectFromServer();
     void sendMessage(const std::string& message);
     void processServerResponse();
@@ -60,7 +64,10 @@ public:
 
     void pingUser(const std::string& user);
 
+    void    parseConfigFile(const std::string& filename, const std::string& botName);
+    bool    getLocalHost();
 
+    void    getServerInfo();
 };
 
 #endif 

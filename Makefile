@@ -12,9 +12,9 @@
 
 NAME = Bot
 
-SRC = main.cpp bot.cpp
+SRC = main.cpp src/bot.cpp src/tools.cpp
 
-HEADER = bot.hpp
+HEADER = inc/bot.hpp inc/tools.hpp
 
 OBJ = $(SRC:.cpp=.o)
 
@@ -25,7 +25,7 @@ all: $(NAME)
 $(NAME): $(OBJ)
 	clang++ $(FLAGS) $(OBJ) -o $(NAME)
 
-%.o: %.cpp $(HEADER)
+%.o: %.cpp $(HEADER) 
 	clang++ $(FLAGS) -c $< -o $@
 
 

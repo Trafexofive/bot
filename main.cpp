@@ -10,7 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "Bot.hpp"
+#include "inc/Bot.hpp"
 #include <iostream>
 #include <unistd.h>
 #include <cstring>
@@ -19,11 +19,14 @@
 int main() {
     Bot myBot;
     myBot.setBotName("MyCoolBot");
-    std::string password = "ali";
-    std::string address = "172.29.9.241";
-    int port = 3344;
+    myBot.parseConfigFile("config.txt", myBot.getBotName());
+    myBot.getServerInfo();
 
-    if (!myBot.connectToServer(address, port, password)) {
+    // std::string password = "ali";
+    // std::string address = "172.29.9.241";
+    // int port = 3344;
+
+    if (!myBot.connectToServer()) {
         std::cerr << "Failed to connect to server" << std::endl;
         return 1;
     }
@@ -34,7 +37,7 @@ int main() {
     myBot.joinChannel("#testchannel");
     myBot.DisplayBanner();
 
-    for (int i = 0; i < 100; ++i) {  // Run for 10 iterations (you can adjust this)
+    for (int i = 0; i < 100; ++i) {
         myBot.sendMessage("ali\r\n");
         myBot.processServerResponse();
         // myBot.pingUser("MyCoolBot");
