@@ -14,7 +14,7 @@ NAME = Bot
 
 SRC = main.cpp bot.cpp
 
-HEADER = ../inc/bot.hpp
+HEADER = bot.hpp
 
 OBJ = $(SRC:.cpp=.o)
 

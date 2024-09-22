@@ -10,7 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../inc/Bot.hpp"
+#include "Bot.hpp"
 #include <iostream>
 #include <unistd.h>
 #include <cstring>
