@@ -16,32 +16,26 @@
 #include <cstring>
 #include <sys/socket.h>
 
-int main() {
+int main(int ac, char **av) {
     Bot myBot;
-    myBot.setBotName("MyCoolBot");
+    myBot.setBotName("ali");
     myBot.parseConfigFile("config.txt", myBot.getBotName());
-    myBot.getServerInfo();
+    myBot.parseArgs(ac, av);
 
-    // std::string password = "ali";
-    // std::string address = "172.29.9.241";
-    // int port = 3344;
 
     if (!myBot.connectToServer()) {
         std::cerr << "Failed to connect to server" << std::endl;
         return 1;
     }
+    myBot.initBot();
+    // myBot.joinChannel();
 
-    myBot.sendMessage("NICK MyCoolBot\r\n");
-    myBot.sendMessage("USER ali 0 * :MyCool IRC Bot\r\n");
-
-    myBot.joinChannel("#testchannel");
     myBot.DisplayBanner();
 
     for (int i = 0; i < 100; ++i) {
-        myBot.sendMessage("ali\r\n");
         myBot.processServerResponse();
         // myBot.pingUser("MyCoolBot");
-        sleep(1);  // Wait for 1 second between each check
+        sleep(1);
     }
 
     myBot.leaveChannel("#testchannel");

@@ -15,10 +15,10 @@
 #include <cstring>
 #include <fstream>
 #include <iostream>
+#include <netdb.h>
 #include <netinet/in.h>
 #include <sys/socket.h>
 #include <unistd.h>
-#include <netdb.h>
 
 #include "../inc/tools.hpp"
 
@@ -38,14 +38,18 @@ Bot &Bot::operator=(const Bot &other) {
 
 Bot::~Bot() { disconnectFromServer(); }
 
+// ################################## GETTERS AND SETTERS
+int Bot::getClientFdSocket() const { return _clientFdSocket; }
+
 std::string Bot::getBotName() const { return _botName; }
 
 void Bot::setBotName(const std::string &name) { _botName = name; }
 
 std::string Bot::getIP() const { return _ip; }
 
-bool Bot::connectToServer(const std::string &address, int port,
-                          const std::string &password) {
+// ################################## CONNECTIONS
+
+bool Bot::connectToServer() {
   _clientFdSocket = socket(AF_INET, SOCK_STREAM, 0);
   if (_clientFdSocket < 0) {
     std::cerr << "Error creating socket" << std::endl;
@@ -54,8 +58,8 @@ bool Bot::connectToServer(const std::string &address, int port,
 
   struct sockaddr_in server;
   server.sin_family = AF_INET;
-  server.sin_port = htons(port);
-  if (inet_pton(AF_INET, address.c_str(), &server.sin_addr) <= 0) {
+  server.sin_port = htons(_port);
+  if (inet_pton(AF_INET, _serverAddress.c_str(), &server.sin_addr) <= 0) {
     std::cerr << "Invalid address" << std::endl;
     close(_clientFdSocket);
     return false;
@@ -68,12 +72,6 @@ bool Bot::connectToServer(const std::string &address, int port,
     return false;
   }
 
-  _ip = address;
-
-  if (!password.empty()) {
-    sendMessage("PASS " + password + "\r\n");
-  }
-
   return true;
 }
 
@@ -84,9 +82,20 @@ void Bot::disconnectFromServer() {
   }
 }
 
-bool Bot::connectToServer() {
-  return connectToServer(_server_address, _port, _password);
+// ##################################
+void Bot::initBot() {
+  sendMessage("USER " + _username + " 0 * :" + _botName + " IRC Bot\r\n");
+  sendMessage("NICK " + _nickname + "\r\n");
+  if (!_channelName.empty()) {
+    joinChannel(_channelName);
+  } else {
+  }
+  if (!_password.empty()) {
+    sendMessage("PASS " + _password + "\r\n");
+  }
 }
+
+// ##################################
 
 void Bot::sendMessage(const std::string &message) {
   if (_clientFdSocket != -1) {
@@ -94,6 +103,18 @@ void Bot::sendMessage(const std::string &message) {
     std::cout << "Sent: " << message << std::endl;
   }
 }
+void Bot::processCommand(const std::string &command) {
+  if (command.find("PING") != std::string::npos) {
+    std::string pong = "PONG " + command.substr(5) + "\r\n";
+    sendMessage(pong);
+  } else if (command.find("PRIVMSG") != std::string::npos) {
+    std::string user = command.substr(1, command.find("!") - 1);
+    std::string message = command.substr(command.find(":", 1) + 1);
+    std::cout << "User: " << user << " Message: " << message << std::endl;
+  }
+}
+
+// ################################## CORE
 
 void Bot::processServerResponse() {
   char buffer[1024];
@@ -103,7 +124,7 @@ void Bot::processServerResponse() {
     buffer[bytesRead] = '\0';
     std::cout << "Received: " << buffer << std::endl;
 
-    // Here you can add logic to parse and respond to server messages
+    processCommand(buffer);
   } else if (bytesRead == 0) {
     std::cout << "Server closed the connection" << std::endl;
     disconnectFromServer();
@@ -112,69 +133,90 @@ void Bot::processServerResponse() {
   }
 }
 
+// ################################## CHANNELS
 void Bot::joinChannel(const std::string &channelName) {
   sendMessage("JOIN " + channelName + "\r\n");
+  _channelName = channelName;
 }
 
 void Bot::leaveChannel(const std::string &channelName) {
   sendMessage("PART " + channelName + "\r\n");
 }
 
-int Bot::getClientFdSocket() const { return _clientFdSocket; }
+// ################################## QUALITY OF LIFE
 
-void Bot::pingUser(const std::string &user) {
-  sendMessage("PING " + user + "\r\n");
-}
+void Bot::pingUser(const std::string &user) {}
 
 void Bot::DisplayBanner() {
   sendMessage("PRIVMSG " + _channelName + " :Welcome to the bot!\r\n");
 }
 
-bool    Bot::getLocalHost() {
-  struct hostent *host_info = gethostbyname("localhost");
-
-  if (host_info == NULL) {
-    std::cerr << "Error: Unable to retrieve information about localhost"
-              << std::endl;
-    return false;
-  }
-  return true;
-}
-
+// ################################## PARSING & CONFIG
 void Bot::parseConfigFile(const std::string &filename,
                           const std::string &botName) {
   std::ifstream file(filename);
   std::string line;
   while (std::getline(file, line)) {
     if (line.find("server_address") != std::string::npos) {
-      _server_address = line.substr(line.find("=") + 2);
-      if (_server_address == "localhost") {
-          _server_address.clear();
-          puts("Resolving localhost");
-        _server_address = resolveIP("localhost");
-        if (_server_address.empty()) {
+      _serverAddress = line.substr(line.find("=") + 2);
+      if (_serverAddress == "localhost") {
+        _serverAddress.clear();
+        _serverAddress = resolveIP("localhost");
+        if (_serverAddress.empty()) {
           std::cerr << "Error: Unable to resolve localhost" << std::endl;
         }
       }
-
     } else if (line.find("port") != std::string::npos) {
       _port = std::stoi(line.substr(line.find("=") + 2));
     } else if (line.find("password") != std::string::npos) {
-      _password = line.substr(line.find("=") + 1);
+      _password = line.substr(line.find("=") + 2);
+    } else if (line.find("channel") != std::string::npos) {
+      _channelName = line.substr(line.find("=") + 2);
+    } else if (line.find("bot_name") != std::string::npos) {
+      _botName = line.substr(line.find("=") + 2);
+    } else if (line.find("bot_username") != std::string::npos) {
+      _username = line.substr(line.find("=") + 2);
+    } else if (line.find("bot_nick") != std::string::npos) {
+      _nickname = line.substr(line.find("=") + 2);
+    } else if (line.find("auto_join") != std::string::npos) {
+      _channelName = line.substr(line.find("=") + 2);
     }
   }
 }
 
-void Bot::getServerInfo() {
-  std::cout << "Server address: " << _server_address << std::endl;
+void Bot::joinChannel() { sendMessage("JOIN " + _channelName + "\r\n"); }
+
+void Bot::getDebugInfo() {
+  std::cout << "#############  BotInfo   #####################" << std::endl;
+  std::cout << "Server address: " << _serverAddress << std::endl;
   std::cout << "Port: " << _port << std::endl;
   std::cout << "Password: " << _password << std::endl;
+  std::cout << "Bot name: " << _botName << std::endl;
+  std::cout << "Channel name: " << _channelName << std::endl;
+  std::cout << "##############################################" << std::endl;
 }
 
+void Bot::parseArgs(int argc, char **argv) {
+  if (argc == 2) {
+    std::string arg = argv[1];
+    if (arg == "-h" || arg == "--help") {
+      std::cout << "tldr : ./bot start" << std::endl;
+      std::cout << "Usage: bot [OPTION...]" << std::endl;
+      std::cout
+          << " -C, --config-file=FILE     use this user configuration file"
+          << std::endl;
+      std::cout << " -d, --debug                 emit debugging messages"
+                << std::endl;
+      std::cout << " -D, --default               reset all options to their "
+                   "default values"
+                << std::endl;
 
-
-
-
-
-
-
+      exit(0);
+    } else if (arg == "-v" || arg == "--version") {
+      std::cout << "Bot version 1.0" << std::endl;
+      exit(0);
+    } else if (arg == "-d" || arg == "--debug") {
+      getDebugInfo();
+    }
+  }
+}
