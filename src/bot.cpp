@@ -74,7 +74,9 @@ void Bot::translateServerResponse(const std::string &response) {
   std::string user = response.substr(1, response.find("!") - 1);
   std::string channel = response.substr(response.find(":") + 1);
 
-  if (response.find("PING") != std::string::npos) {
+  if (isCommand(response)) {
+    processCommand(response);
+  } else if (response.find("PING") != std::string::npos) {
     std::string pong = "PONG " + response.substr(5) + "\r\n";
     sendMessageToServer(pong);
   } else if (response.find("JOIN") != std::string::npos) {
@@ -125,15 +127,29 @@ void Bot::addReminderUser(const std::string &title, const std::string &message,
   _reminders.push_back(reminder);
 }
 
+void Bot::SendReminder(Reminder &reminder) {
+  if (reminder.getChannel().empty()) {
+    messageUser(reminder.getUser(), "Reminder for user: " + reminder.getUser());
+    messageUser(reminder.getUser(), "Title: " + reminder.getTitle());
+    messageUser(reminder.getUser(), "Message: " + reminder.getMessage());
+  } else {
+    messageChannel(reminder.getChannel(),
+                   "Reminder for channel: " + reminder.getChannel());
+    messageChannel(reminder.getChannel(), "Title: " + reminder.getTitle());
+    messageChannel(reminder.getChannel(), "Message: " + reminder.getMessage());
+  }
+}
+
 void Bot::checkReminders() {
   time_t currentTime = getUptime();
   for (auto &reminder : _reminders) {
     if (reminder.getTime() == currentTime) {
-      if (reminder.getChannel().empty()) {
-        messageUser(reminder.getUser(), reminder.getMessage());
-      } else {
-        messageChannel(reminder.getChannel(), reminder.getMessage());
-      }
+      SendReminder(reminder);
     }
   }
+}
+
+void Bot::DisplayUptime() {
+  std::cout << "Bot" << _nickname << " has been up for " << getUptime()
+            << " seconds" << std::endl;
 }

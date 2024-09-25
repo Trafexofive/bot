@@ -21,13 +21,34 @@ bot_nick = bot
 master = false
 bot_owner = master
 #bot_owner = {master, admin}
+bot_password = 1234
 ##########################
 auto_join = true
 channels = #clever
 ##########################
 interactive = false
-debug = true
+debug = false
 ##########################
 runtime_bool = true
 runtime = 100
+##########################
+# available commands : {whisper, note, announce, remind, startpoll, endpoll, vote, listpoll, help, quit, unsub, sub}
+commands = {whisper, note, announce, remind, startpoll, endpoll, vote, listpoll, help, quit, unsub, sub}
+##########################
+
+whisper -c --channel | -u --user [message]
+note -c --channel | -u --user [note]
+announce [message] 
+remind [user/channel] [message] [time]
+startpoll [name] [question] // subject to change
+endpoll [name]
+
+vote [name] [option]
+listpoll [name]
+help [command] // subject to change
+
+quit
+
+unsub [botname]
+sub [botname] [botpassword]
 

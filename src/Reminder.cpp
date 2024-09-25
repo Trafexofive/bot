@@ -18,8 +18,8 @@
 
 // canonical form
 
-Reminder::Reminder() : _title(""), _message(""), _time(0), _user(""), _channel("") {}
-
+Reminder::Reminder()
+    : _title(""), _message(""), _time(0), _user(""), _channel("") {}
 
 Reminder::Reminder(const Reminder &other) { *this = other; }
 
@@ -55,4 +55,8 @@ time_t Reminder::getTime() const { return _time; }
 std::string Reminder::getUser() const { return _user; }
 
 std::string Reminder::getChannel() const { return _channel; }
+
+std::string Reminder::getTitle() const { return _title; }
+
+// reminder specific methodes
 

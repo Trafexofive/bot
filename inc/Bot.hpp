@@ -39,16 +39,17 @@ private:
   std::string _botName;
   std::string _username;
   std::string _nickname;
+  std::string _password;
 
   bool _debug;
 
   unsigned int _botId;
+  std::string _botPassword;
 
   std::string _channelName;
   bool _autoJoinChannel;
   std::string _serverAddress;
   std::string domainName;
-  std::string _password;
 
   time_t _start_time;
   time_t _uptime;
@@ -126,6 +127,9 @@ public:
   void translateServerResponse(const std::string &response);
 
   void processCommand(const std::string &command);
+  bool isCommand(const std::string &line);
+  std::vector<std::string> getCommandArgs(const std::string &line);
+  int commandArgsCount(const std::string &args);
 
   // REMINDER
   void initReminders();
@@ -136,6 +140,7 @@ public:
   void addReminderUser(const std::string &title, const std::string &message,
                        time_t reminderTime);
   void checkReminders();
+  void SendReminder(Reminder &reminder);
 };
 
 // class BotManager {

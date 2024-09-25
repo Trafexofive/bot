@@ -43,17 +43,10 @@ public:
   time_t getTime() const;
   std::string getUser() const;
   std::string getChannel() const;
+  std::string getReminder() const;
+  std::string getTitle() const;
 
   // reminder specific methodes
-  // void displayReminder(const std::string &user);
-  // {
-  //
-  // };
-  //
-  // void displayReminder(const std::string &user)
-  // {
-  //
-  // };
 };
 
 #endif
