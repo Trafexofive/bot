@@ -10,37 +10,21 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "inc/Bot.hpp"
-#include <iostream>
-#include <unistd.h>
+#include "../inc/Bot.hpp"
 #include <cstring>
+#include <iostream>
 #include <sys/socket.h>
+#include <unistd.h>
 
 int main(int ac, char **av) {
-    Bot myBot;
-    myBot.setBotName("ali");
-    myBot.parseConfigFile("config.txt", myBot.getBotName());
-    myBot.parseArgs(ac, av);
+  Bot bot;
 
+  bot.coreLoop(ac, av);
 
-    if (!myBot.connectToServer()) {
-        std::cerr << "Failed to connect to server" << std::endl;
-        return 1;
-    }
-    myBot.initBot();
-    // myBot.joinChannel();
+  bot.joinChannel("#clever");
+  bot.joinChannel("#lord");
 
-    myBot.DisplayBanner();
+  bot.leaveChannel("#testchannel");
 
-    for (int i = 0; i < 100; ++i) {
-        myBot.processServerResponse();
-        // myBot.pingUser("MyCoolBot");
-        sleep(1);
-    }
-
-    myBot.leaveChannel("#testchannel");
-
-    myBot.disconnectFromServer();
-
-    return 0;
+  return 0;
 }

@@ -10,15 +10,17 @@
 #                                                                              #
 # **************************************************************************** #
 
-NAME = Bot
+NAME = bin/bot
 
-SRC = main.cpp src/bot.cpp src/tools.cpp
+#all src files
+
+SRC = src/main.cpp src/bot.cpp src/tools.cpp src/parse.cpp src/connection.cpp src/display.cpp src/message.cpp src/channel.cpp src/core.cpp
 
 HEADER = inc/bot.hpp inc/tools.hpp
 
 OBJ = $(SRC:.cpp=.o)
 
-FLAGS = -Wall -Wextra -Werror
+FLAGS = -Wall -Wextra -Werror -std=c++98
 
 all: $(NAME)
 

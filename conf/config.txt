@@ -1,0 +1,30 @@
+
+# To-do;
+# 1. Add more configuration options
+# 2. Add more comments
+# 3. Add more examples
+# 4. Add more documentation
+# 5. Add more error handling
+# 6. Add more logging
+# 7. Add more security
+
+
+
+server_address = localhost
+server_port = 3344
+##########################
+password = alilepro
+bot_name = default
+bot_username = mlamkadm
+bot_nick = bot
+##########################
+master = false
+bot_owner = master
+#bot_owner = {master, admin}
+##########################
+auto_join = true
+channels = #clever
+##########################
+interactive = false
+debug = false
+##########################
