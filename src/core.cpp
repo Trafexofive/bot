@@ -11,9 +11,17 @@
 /* ************************************************************************** */
 
 #include "../inc/Bot.hpp"
+#include "../inc/Reminder.hpp"
 
 int     Bot::coreLoop(int ac, char **av) {
+    
   parseArgs(ac, av);
+  initUptime();
+  addReminderChannel("#clever", "Hello from my bot", 10);
+
+  // make reminder.init() and reminder.run() functions
+  // reminders will be relative to bot uptime
+
 
   if (!connectToServer()) {
     std::cerr << "Failed to connect to server" << std::endl;

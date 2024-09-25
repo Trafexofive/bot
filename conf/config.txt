@@ -26,5 +26,8 @@ auto_join = true
 channels = #clever
 ##########################
 interactive = false
-debug = false
+debug = true
 ##########################
+runtime_bool = true
+runtime = 100
+

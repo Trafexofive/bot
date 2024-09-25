@@ -15,10 +15,14 @@
 #include <iostream>
 #include <sys/socket.h>
 #include <unistd.h>
+#include "../inc/Reminder.hpp"
 
 int main(int ac, char **av) {
   {
     Bot bot;
+    
+
+
     bot.coreLoop(ac, av);
   }
 

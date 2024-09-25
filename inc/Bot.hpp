@@ -13,77 +13,47 @@
 #ifndef BOT_HPP
 #define BOT_HPP
 
-#include <string>
+#include "../inc/Poll.hpp"
+#include "../inc/Reminder.hpp"
+#include "../inc/tools.hpp"
 #include <arpa/inet.h>
 #include <cstring>
+#include <ctime>
 #include <fstream>
 #include <iostream>
 #include <netdb.h>
-#include <vector>
 #include <netinet/in.h>
+#include <string>
 #include <sys/socket.h>
 #include <unistd.h>
-#include "../inc/tools.hpp"
-#include <ctime>
-#include "../inc/Reminder.hpp"
-#include "../inc/Poll.hpp"
-
-class Reminder {
-private:
-  std::string _title;
-  std::string _message;
-  std::string _time;
-
-  std::string _user;
-  std::string channel;
-  // either user or channel
-public:
-  Reminder();
-  Reminder(const Reminder &other);
-  ~Reminder();
-
-  Reminder(const std::string &message, const std::string &time,
-           const std::string &user, const std::string &channel);
-
-  // GETTERS & SETTERS
-
-  std::string getMessage() const;
-  std::string getTime() const;
-  std::string getUser() const;
-  std::string getChannel() const;
-
-  // reminder specific methodes
-  void setReminder();
-  // void displayReminder(const std::string &user);
-  // {
-  //
-  // };
-  //
-  // void displayReminder(const std::string &user)
-  // {
-  //
-  // };
-};
+#include <vector>
 
 class Bot {
 private:
+  // std::vector<Reminder> _reminders;
+  // std::vector<Poll> _polls;
+  // std::vector<std::string> _channels;
   int _clientFdSocket;
   int _port;
 
   std::string _botName;
   std::string _username;
   std::string _nickname;
-  bool      _debug;
+
+  bool _debug;
+
   unsigned int _botId;
 
-  // std::vector<std::string> _channels;
   std::string _channelName;
   bool _autoJoinChannel;
   std::string _serverAddress;
   std::string domainName;
   std::string _password;
 
-  unsigned int _uptime;
+  time_t _start_time;
+  time_t _uptime;
+  std::vector<Reminder> _reminders;
+  time_t runTime;
 
 public:
   Bot();
@@ -102,8 +72,8 @@ public:
   bool connectToServer();
   void disconnectFromServer();
 
-  //core
-  int   coreLoop(int ac , char **av);
+  // core
+  int coreLoop(int ac, char **av);
   void sendMessageToServer(const std::string &message);
   void processServerResponse();
   void joinChannel(const std::string &channelName);
@@ -141,7 +111,8 @@ public:
   void addChannel(const std::string &channel);
   void removeChannel(const std::string &channel);
   void messageChannel(const std::string &message);
-  void messageChannel(const std::string &channelName, const std::string &message);
+  void messageChannel(const std::string &channelName,
+                      const std::string &message);
   void messageUser(const std::string &user, const std::string &message);
 
   void pingUser(const std::string &user);
@@ -156,7 +127,15 @@ public:
 
   void processCommand(const std::string &command);
 
-  void Uptime();
+  // REMINDER
+  void initReminders();
+  time_t getUptime();
+  void initUptime();
+  void addReminderChannel(const std::string &title, const std::string &message,
+                          time_t reminderTime);
+  void addReminderUser(const std::string &title, const std::string &message,
+                       time_t reminderTime);
+  void checkReminders();
 };
 
 // class BotManager {

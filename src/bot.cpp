@@ -11,11 +11,13 @@
 /* ************************************************************************** */
 
 #include "../inc/Bot.hpp"
+#include "../inc/Reminder.hpp"
 #include "../inc/tools.hpp"
 #include <algorithm>
 
-Bot::Bot() : _clientFdSocket(-1), _botName("bot"), _channelName(""),
-             _nickname("botNick"), _password(""), _uptime(0) {} 
+Bot::Bot()
+    : _clientFdSocket(-1), _botName("bot"), _channelName(""),
+      _nickname("botNick"), _password(""), _uptime(0) {}
 
 Bot::Bot(const Bot &other) { *this = other; }
 
@@ -39,7 +41,6 @@ std::string Bot::getBotName() const { return _botName; }
 
 void Bot::setBotName(const std::string &name) { _botName = name; }
 
-
 // ################################## CORE
 
 void Bot::processServerResponse() {
@@ -51,13 +52,16 @@ void Bot::processServerResponse() {
 
     translateServerResponse(buffer);
   } else if (bytesRead == 0) {
-    std::cout << "Server closed the connection" << std::endl;
+    if (_debug) {
+      std::cout << "Server closed the connection" << std::endl;
+    }
     disconnectFromServer();
   } else {
-    std::cerr << "Error reading from server" << std::endl;
+    if (_debug) {
+      std::cerr << "Error reading from server" << std::endl;
+    }
   }
 }
-
 
 // void Bot::configFileSyntaxCheck(const std::string &filename)
 // {
@@ -70,7 +74,6 @@ void Bot::translateServerResponse(const std::string &response) {
   std::string user = response.substr(1, response.find("!") - 1);
   std::string channel = response.substr(response.find(":") + 1);
 
-
   if (response.find("PING") != std::string::npos) {
     std::string pong = "PONG " + response.substr(5) + "\r\n";
     sendMessageToServer(pong);
@@ -80,13 +83,57 @@ void Bot::translateServerResponse(const std::string &response) {
   } else if (response.find("PRIVMSG") != std::string::npos) {
     handlePrivmsg(response);
   } else {
-      if (_debug) {
-        std::cout << response << std::endl;
-      }
+    if (_debug) {
+      std::cout << response << std::endl;
+    }
   }
 }
 
+// starts a thread that increments the uptime every second and updates _uptime
+void Bot::initUptime() {
+  std::thread t([this]() {
+    while (true) {
+      std::this_thread::sleep_for(std::chrono::seconds(1));
+      _uptime++;
+      checkReminders();
+    }
+  });
+  t.detach();
+}
 
-// void Bot:: Uptime() {
-//   sendMessage("PRIVMSG " + _channelName + " :Uptime: " + uptime + "\r\n");
-// }
+time_t Bot::getUptime() {
+
+  if (_debug) {
+    std::cout << _uptime << std::endl;
+  }
+  return _uptime;
+}
+
+void Bot::addReminderChannel(const std::string &title,
+                             const std::string &message, time_t reminderTime) {
+  time_t startTime = getUptime();
+  time_t endTime = startTime + reminderTime;
+  Reminder reminder(title, _channelName, message, endTime);
+  _reminders.push_back(reminder);
+}
+
+void Bot::addReminderUser(const std::string &title, const std::string &message,
+                          time_t reminderTime) {
+  time_t startTime = getUptime();
+  time_t endTime = startTime + reminderTime;
+  Reminder reminder(title, _nickname, message, endTime);
+  _reminders.push_back(reminder);
+}
+
+void Bot::checkReminders() {
+  time_t currentTime = getUptime();
+  for (auto &reminder : _reminders) {
+    if (reminder.getTime() == currentTime) {
+      if (reminder.getChannel().empty()) {
+        messageUser(reminder.getUser(), reminder.getMessage());
+      } else {
+        messageChannel(reminder.getChannel(), reminder.getMessage());
+      }
+    }
+  }
+}
