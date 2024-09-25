@@ -12,24 +12,34 @@
 
 NAME = bin/bot
 
-#all src files
-
-SRC = src/main.cpp src/bot.cpp src/tools.cpp src/parse.cpp src/connection.cpp src/display.cpp src/message.cpp src/channel.cpp src/core.cpp
-
+SRC_DIR = src
 HEADER = inc/bot.hpp inc/tools.hpp
+OBJ_DIR = obj
 
-OBJ = $(SRC:.cpp=.o)
+SRC = main.cpp bot.cpp tools.cpp parse.cpp connection.cpp display.cpp message.cpp channel.cpp core.cpp
 
-FLAGS = -Wall -Wextra -Werror -std=c++98
+OBJ = $(SRC:%.cpp=$(OBJ_DIR)/%.o)
+
+FLAGS = -Wall -Wextra #-Werror
+
+CPP98 = -std=c++98
+
+ARGS = -C conf/config.txt
+
+build: all clean
 
 all: $(NAME)
 
+run: all clean
+	./$(NAME) $(ARGS)
+
 $(NAME): $(OBJ)
+	@mkdir -p $(dir $(NAME))
 	clang++ $(FLAGS) $(OBJ) -o $(NAME)
 
-%.o: %.cpp $(HEADER) 
+$(OBJ_DIR)/%.o: $(SRC_DIR)/%.cpp
+	@mkdir -p $(OBJ_DIR)
 	clang++ $(FLAGS) -c $< -o $@
-
 
 clean:
 	rm -f $(OBJ)
@@ -39,4 +49,5 @@ fclean: clean
 
 re: fclean all
 
-.PHONY: all clean fclean re
+.PHONY: all build run clean fclean re
+

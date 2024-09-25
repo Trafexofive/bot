@@ -14,7 +14,8 @@
 #include "../inc/tools.hpp"
 #include <algorithm>
 
-Bot::Bot() : _clientFdSocket(-1), _botName(""), _ip(""), _channelName("") , _nickname (""){}
+Bot::Bot() : _clientFdSocket(-1), _botName("bot"), _channelName(""),
+             _nickname("botNick"), _password(""), _uptime(0) {} 
 
 Bot::Bot(const Bot &other) { *this = other; }
 
@@ -22,7 +23,6 @@ Bot &Bot::operator=(const Bot &other) {
   if (this != &other) {
     _clientFdSocket = other._clientFdSocket;
     _botName = other._botName;
-    _ip = other._ip;
     _channelName = other._channelName;
     _nickname = other._nickname;
     _password = other._password;
@@ -39,7 +39,6 @@ std::string Bot::getBotName() const { return _botName; }
 
 void Bot::setBotName(const std::string &name) { _botName = name; }
 
-std::string Bot::getIP() const { return _ip; }
 
 // ################################## CORE
 

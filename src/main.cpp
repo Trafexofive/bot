@@ -17,14 +17,10 @@
 #include <unistd.h>
 
 int main(int ac, char **av) {
-  Bot bot;
-
-  bot.coreLoop(ac, av);
-
-  bot.joinChannel("#clever");
-  bot.joinChannel("#lord");
-
-  bot.leaveChannel("#testchannel");
+  {
+    Bot bot;
+    bot.coreLoop(ac, av);
+  }
 
   return 0;
 }

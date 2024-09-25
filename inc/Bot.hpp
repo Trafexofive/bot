@@ -24,6 +24,9 @@
 #include <sys/socket.h>
 #include <unistd.h>
 #include "../inc/tools.hpp"
+#include <ctime>
+#include "../inc/Reminder.hpp"
+#include "../inc/Poll.hpp"
 
 class Reminder {
 private:
@@ -77,7 +80,7 @@ private:
   std::string _channelName;
   bool _autoJoinChannel;
   std::string _serverAddress;
-  std::string _ip;
+  std::string domainName;
   std::string _password;
 
   unsigned int _uptime;
@@ -146,7 +149,7 @@ public:
 
   // Parse & config
 
-  void parseConfigFile(const std::string &filename, const std::string &botName);
+  void parseConfigFile(const std::string &filename);
   void parseArgs(int argc, char **argv);
 
   void translateServerResponse(const std::string &response);
@@ -156,9 +159,9 @@ public:
   void Uptime();
 };
 
-class BotManager {
-private:
-  Bot *_bot;
-};
+// class BotManager {
+// private:
+//   Bot *_bot;
+// };
 
 #endif

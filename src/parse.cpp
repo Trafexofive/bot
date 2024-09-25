@@ -49,7 +49,7 @@ void Bot::parseArgs(int argc, char **argv) {
     } else if (arg == "-i" || arg == "--interactive") {
       std::cout << "Interactive mode" << std::endl;
     } else if (arg == "-C" || arg == "--config-file") {
-      this->parseConfigFile(argv[2], _botName);
+      this->parseConfigFile(argv[2]);
     } else {
       std::cerr << "Unknown option" << std::endl;
       exit(1);
@@ -57,8 +57,7 @@ void Bot::parseArgs(int argc, char **argv) {
   }
 }
 
-void Bot::parseConfigFile(const std::string &filename,
-                          const std::string &botName) {
+void Bot::parseConfigFile(const std::string &filename) {
   std::ifstream file(filename);
   std::string line;
   while (std::getline(file, line)) {
