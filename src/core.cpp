@@ -13,9 +13,8 @@
 #include "../inc/Bot.hpp"
 #include "../inc/Reminder.hpp"
 
-int     Bot::coreLoop(int ac, char **av) {
+int     Bot::coreLoop() {
     
-  parseArgs(ac, av);
   DisplayBotInfo();
   initUptime();
 

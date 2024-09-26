@@ -12,8 +12,6 @@
 
 #include "../inc/Bot.hpp"
 #include "../inc/Reminder.hpp"
-#include "../inc/tools.hpp"
-#include <algorithm>
 
 Bot::Bot()
     : _clientFdSocket(-1), _port(6667), _botName(""), _username(""),

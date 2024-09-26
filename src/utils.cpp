@@ -1,16 +1,16 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   tools.cpp                                          :+:      :+:    :+:   */
+/*   utils.cpp                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: mlamkadm <mlamkadm@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/09/22 18:58:49 by mlamkadm          #+#    #+#             */
-/*   Updated: 2024/09/22 18:58:49 by mlamkadm         ###   ########.fr       */
+/*   Created: 2024/09/26 20:54:36 by mlamkadm          #+#    #+#             */
+/*   Updated: 2024/09/26 20:54:36 by mlamkadm         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../inc/tools.hpp"
+#include "../inc/Bot.hpp"
 
 std::string resolveIP(const std::string& hostname) {
     struct hostent* host_info = gethostbyname(hostname.c_str());

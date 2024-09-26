@@ -14,7 +14,6 @@
 #define BOT_HPP
 
 #include "../inc/Reminder.hpp"
-#include "../inc/tools.hpp"
 #include <arpa/inet.h>
 #include <cstring>
 #include <ctime>
@@ -26,6 +25,9 @@
 #include <sys/socket.h>
 #include <unistd.h>
 #include <vector>
+#include <netdb.h>
+#include <arpa/inet.h>
+#include <algorithm>
 
 class Bot {
 private:
@@ -46,6 +48,7 @@ private:
   time_t _uptime;
   std::vector<Reminder> _reminders;
   std::string _masters;
+  // std::vector<std::string> _masters;
   bool _debug;
   bool _useRuntime;
   time_t _runtime;
@@ -71,7 +74,7 @@ public:
   void disconnectFromServer();
 
   // core
-  int coreLoop(int ac, char **av);
+  int coreLoop();
   void sendMessageToServer(const std::string &message);
   bool processServerResponse();
   void sendToAllChannels(const std::string &message);
@@ -152,5 +155,7 @@ public:
   void help(const std::string &id);
   void info(const std::string &id);
 };
+
+std::string resolveIP(const std::string& hostname);
 
 #endif

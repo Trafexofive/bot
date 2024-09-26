@@ -57,14 +57,6 @@ std::string Reminder::getTitle() const { return _title; }
 
 // reminder specific methodes
 
-void Bot::checkReminders() {
-  time_t currentTime = getUptime();
-  for (auto &reminder : _reminders) {
-    if (reminder.getTime() == currentTime) {
-      SendReminder(reminder);
-    }
-  }
-}
 
 void Bot::addReminderChannel(const std::string &title,
                              const std::string &message, time_t reminderTime) {
@@ -95,3 +87,23 @@ void Bot::SendReminder(Reminder &reminder) {
     messageChannel(reminder.getChannel(), "Message > " + reminder.getMessage());
   }
 }
+void Bot::checkReminders() {
+  time_t currentTime = getUptime();
+  for (std::vector<Reminder>::iterator it = _reminders.begin(); it != _reminders.end(); ++it) {
+    if (it->getTime() == currentTime) {
+      SendReminder(*it);
+    }
+  }
+}
+
+// const std::vector<std::string> Bot::loadMasters(std::string &masters) {
+//     std::vector<std::string> masterList;
+//     std::string master; 
+//
+//     for (int i = 0; i < master.size(); i++) {
+//         whild (masters[i] != ' ' && i < masters.size()) {
+//             master += masters[i];
+//             i++;
+//         }
+//     }
+// }

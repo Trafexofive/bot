@@ -2,7 +2,7 @@ server_address = localhost
 server_port = 3344
 ##########################
 password = alilepro
-bot_name = default
+bot_name = default_bot
 bot_user = mlamkadm
 bot_nick = bot
 ##########################
@@ -20,7 +20,8 @@ debug = false
 #runtime = 10
 ##########################
 
-commands = {whisper remind help quit unsub sub uptime}
+#allow_commands = true
+#commands = {whisper remind help quit unsub sub uptime}
 
 ##########################
 #whisper -c --channel | -u --user [message]
