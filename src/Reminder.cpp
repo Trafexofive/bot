@@ -11,10 +11,7 @@
 /* ************************************************************************** */
 
 #include "../inc/Reminder.hpp"
-
-// std::vector<Reminder> reminders;
-// make reminder.init() and reminder.run() functions
-// reminders will be relative to bot uptime
+#include "../inc/Bot.hpp"
 
 // canonical form
 
@@ -60,3 +57,41 @@ std::string Reminder::getTitle() const { return _title; }
 
 // reminder specific methodes
 
+void Bot::checkReminders() {
+  time_t currentTime = getUptime();
+  for (auto &reminder : _reminders) {
+    if (reminder.getTime() == currentTime) {
+      SendReminder(reminder);
+    }
+  }
+}
+
+void Bot::addReminderChannel(const std::string &title,
+                             const std::string &message, time_t reminderTime) {
+  time_t startTime = getUptime();
+  time_t endTime = startTime + reminderTime;
+  Reminder reminder(title, _channelName, message, endTime);
+  _reminders.push_back(reminder);
+}
+
+void Bot::addReminderUser(const std::string &title, const std::string &message,
+                          time_t reminderTime) {
+  time_t startTime = getUptime();
+  time_t endTime = startTime + reminderTime;
+  Reminder reminder(title, _nickname, message, endTime);
+  _reminders.push_back(reminder);
+}
+
+void Bot::SendReminder(Reminder &reminder) {
+  if (reminder.getChannel().empty()) {
+    messageUser(reminder.getUser(),
+                "User Reminder >--" + reminder.getTitle() + "--<");
+    messageChannel("");
+    messageUser(reminder.getUser(), "Message > " + reminder.getMessage());
+  } else {
+    messageChannel(reminder.getChannel(),
+                   "Channel Reminder >--" + reminder.getTitle() + "--<");
+    messageChannel("");
+    messageChannel(reminder.getChannel(), "Message > " + reminder.getMessage());
+  }
+}

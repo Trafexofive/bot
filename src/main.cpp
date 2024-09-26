@@ -18,11 +18,9 @@
 #include "../inc/Reminder.hpp"
 
 int main(int ac, char **av) {
+
   {
     Bot bot;
-    
-
-
     bot.coreLoop(ac, av);
   }
 

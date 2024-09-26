@@ -16,7 +16,7 @@ SRC_DIR = src
 HEADER = inc/bot.hpp inc/tools.hpp
 OBJ_DIR = obj
 
-SRC = main.cpp bot.cpp tools.cpp parse.cpp connection.cpp display.cpp message.cpp channel.cpp core.cpp Reminder.cpp commands.cpp
+SRC = main.cpp bot.cpp tools.cpp parse.cpp connection.cpp display.cpp message.cpp channel.cpp core.cpp Reminder.cpp commands.cpp Uptime.cpp
 
 OBJ = $(SRC:%.cpp=$(OBJ_DIR)/%.o)
 
@@ -26,9 +26,10 @@ CPP98 = -std=c++98
 
 ARGS = -C conf/config.txt
 
-build: all clean
 
 all: $(NAME)
+
+build: all clean
 
 run: all clean
 	./$(NAME) $(ARGS)

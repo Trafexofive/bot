@@ -13,7 +13,6 @@
 #ifndef BOT_HPP
 #define BOT_HPP
 
-#include "../inc/Poll.hpp"
 #include "../inc/Reminder.hpp"
 #include "../inc/tools.hpp"
 #include <arpa/inet.h>
@@ -30,9 +29,6 @@
 
 class Bot {
 private:
-  // std::vector<Reminder> _reminders;
-  // std::vector<Poll> _polls;
-  // std::vector<std::string> _channels;
   int _clientFdSocket;
   int _port;
 
@@ -41,20 +37,18 @@ private:
   std::string _nickname;
   std::string _password;
 
-  bool _debug;
-
-  unsigned int _botId;
-  std::string _botPassword;
-
   std::string _channelName;
   bool _autoJoinChannel;
-  std::string _serverAddress;
-  std::string domainName;
 
-  time_t _start_time;
+  std::string _serverAddress;
+  std::string _domainName;
+
   time_t _uptime;
   std::vector<Reminder> _reminders;
-  time_t runTime;
+  std::string _masters;
+  bool _debug;
+  bool _useRuntime;
+  time_t _runtime;
 
 public:
   Bot();
@@ -65,10 +59,13 @@ public:
   // Getters
   std::string getBotName() const;
   std::string getIP() const;
+  int getClientFdSocket() const;
+  int getPort() const;
 
   // Setters
   void setBotName(const std::string &name);
-
+  void setClientFdSocket(int clientFdSocket);
+  void setPort(int port);
   // Bot-specific methods
   bool connectToServer();
   void disconnectFromServer();
@@ -76,33 +73,25 @@ public:
   // core
   int coreLoop(int ac, char **av);
   void sendMessageToServer(const std::string &message);
-  void processServerResponse();
+  bool processServerResponse();
+  void sendToAllChannels(const std::string &message);
+
   void joinChannel(const std::string &channelName);
   void joinChannel();
   void leaveChannel(const std::string &channelName);
-
-  int getClientFdSocket() const;
-  int getPort() const;
-  void setClientFdSocket(int clientFdSocket);
-  void setPort(int port);
 
   void setServerAddress(const std::string &serverAddress);
   std::string getServerAddress() const;
   // auth
   void registerBot();
   // command handler
-  void getCommand(const std::string &line);
   void handleCommand(const std::string &line);
   void handlePrivmsg(const std::string &response);
   // Display
-  void DisplayBanner();
   void DisplayWelcome();
   void DisplayHelp();
-  void DisplayTime();
   void DisplayDate();
-  void DisplayUptime();
-  void DisplayConfig();
-  void DisplayConfig(const std::string &filename);
+  void DisplayUptime(const std::string &id);
   void DisplayBotInfo();
   // channels
   void listChannels();
@@ -123,13 +112,21 @@ public:
 
   void parseConfigFile(const std::string &filename);
   void parseArgs(int argc, char **argv);
+  std::string loadCommands(const std::string &line);
+  void handleServerAddr(const std::string &line);
+  std::string loadMasters(const std::string &line);
 
   void translateServerResponse(const std::string &response);
 
   void processCommand(const std::string &command);
+  void processChannelCommand(const std::string &response);
+  void processUserCommand(const std::string &response);
+  void checkResponse(const std::string &response);
   bool isCommand(const std::string &line);
-  std::vector<std::string> getCommandArgs(const std::string &line);
   int commandArgsCount(const std::string &args);
+  std::string getCommandArgs(const std::string &response);
+  std::string getArgIndex(int index, const std::string &args);
+  std::string getCommand(const std::string &response);
 
   // REMINDER
   void initReminders();
@@ -141,11 +138,19 @@ public:
                        time_t reminderTime);
   void checkReminders();
   void SendReminder(Reminder &reminder);
-};
+  bool checkRuntime(time_t time);
 
-// class BotManager {
-// private:
-//   Bot *_bot;
-// };
+  bool isChannel(const std::string &channel);
+  bool isMaster(const std::string &user);
+  bool isUser(const std::string &user);
+  bool inChannels(const std::string &channel);
+  bool isMasterChannel(const std::string &channel);
+
+  void whisperUser(const std::string &user, const std::string &message);
+  void whisperChannel(const std::string &channel, const std::string &message);
+
+  void help(const std::string &id);
+  void info(const std::string &id);
+};
 
 #endif

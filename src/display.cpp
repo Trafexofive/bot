@@ -18,33 +18,36 @@ void Bot::DisplayBotInfo() {
   std::cout << "Port: " << _port << std::endl;
   std::cout << "Password: " << _password << std::endl;
   std::cout << "Bot name: " << _botName << std::endl;
-  std::cout << "Channel name: " << _channelName << std::endl;
+  std::cout << "Auto-join Channel name: " << _channelName << std::endl;
+  std::cout << "Nickname: " << _nickname << std::endl;
   std::cout << "##############################################" << std::endl;
 }
 
-// void Bot::DisplayBanner(std::vector<std::string> banner) {
-// }
-
-// std::vector<std::string> Bot::getBanner(const std::string &bannerFileName) {
-//
-//
-// }
-
-void Bot::DisplayHelp() {
-  std::cout << "#############  Help   #####################" << std::endl;
-  std::cout << "Commands: " << std::endl;
-  std::cout << "help: Display this help message" << std::endl;
-  std::cout << "info: Display bot info" << std::endl;
-  std::cout << "banner: Display banner" << std::endl;
-  std::cout << "join: Join a channel" << std::endl;
-  std::cout << "leave: Leave a channel" << std::endl;
-  std::cout << "list: List all channels" << std::endl;
-  std::cout << "ping: Ping a user" << std::endl;
-  std::cout << "pingserver: Ping the server" << std::endl;
-  std::cout << "msg: Send a message to a user" << std::endl;
-  std::cout << "msgchannel: Send a message to a channel" << std::endl;
-  std::cout << "quit: Quit the bot" << std::endl;
-  std::cout << "cmd <command>: for bot specific commands: refer to cmd -h for more" << std::endl;
-  std::cout << "##############################################" << std::endl;
+void Bot::help(const std::string &id) {
+  std::cout << "in help" << std::endl;
+  if (isMaster(id) ){
+    messageUser(id, "<--BotCommands--> ");
+    messageUser(id, "<help> [user/channel]> Display this help message");
+    messageUser(id, "<info> Display bot info");
+    messageUser(id, "<unsub> remove user from masters");
+    messageUser(id, "<sub> add user to masters");
+    messageUser(id, "<uptime> Display bot uptime");
+    messageUser(id, "<join> <channel> Join a channel");
+    messageUser(id, "<whisper> <user> <message> Send an anonimous message to a user");
+  }
+  else {
+    messageChannel(id, "You do not have permission to use this command");
+  }
 }
 
+void Bot::info(const std::string &id) {
+  if (isUser(id) && isMaster(id)) {
+    messageUser(id, "BotInfo> ");
+    messageUser(id, "Server address> " + _serverAddress);
+    messageUser(id, "Port> " + std::to_string(_port));
+    messageUser(id, "Password> " + _password);
+    messageUser(id, "Bot name> " + _botName);
+  } else {
+    messageChannel(id, "You do not have permission to use this command");
+  }
+}

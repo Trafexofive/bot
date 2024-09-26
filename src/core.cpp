@@ -16,6 +16,7 @@
 int     Bot::coreLoop(int ac, char **av) {
     
   parseArgs(ac, av);
+  DisplayBotInfo();
   initUptime();
 
   if (!connectToServer()) {
@@ -24,7 +25,8 @@ int     Bot::coreLoop(int ac, char **av) {
   }
   registerBot();
   while (1) {
-    processServerResponse();
+      if (!processServerResponse())
+        break;
     sleep(1);
   }
   return 0;

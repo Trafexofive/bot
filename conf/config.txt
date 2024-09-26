@@ -1,54 +1,39 @@
-
-# To-do;
-# 1. Add more configuration options
-# 2. Add more comments
-# 3. Add more examples
-# 4. Add more documentation
-# 5. Add more error handling
-# 6. Add more logging
-# 7. Add more security
-
-
-
 server_address = localhost
 server_port = 3344
 ##########################
 password = alilepro
 bot_name = default
-bot_username = mlamkadm
+bot_user = mlamkadm
 bot_nick = bot
 ##########################
-master = false
-bot_owner = master
-#bot_owner = {master, admin}
-bot_password = 1234
+#bot_owner = master
+masters = { master admin cleverlord }
+#bot_hash = 1234
 ##########################
 auto_join = true
-channels = #clever
+channels = #clever 
 ##########################
-interactive = false
+#interactive = false
 debug = false
 ##########################
-runtime_bool = true
-runtime = 100
-##########################
-# available commands : {whisper, note, announce, remind, startpoll, endpoll, vote, listpoll, help, quit, unsub, sub}
-commands = {whisper, note, announce, remind, startpoll, endpoll, vote, listpoll, help, quit, unsub, sub}
+#runtime_bool = true
+#runtime = 10
 ##########################
 
-whisper -c --channel | -u --user [message]
-note -c --channel | -u --user [note]
-announce [message] 
-remind [user/channel] [message] [time]
-startpoll [name] [question] // subject to change
-endpoll [name]
+commands = {whisper remind help quit unsub sub uptime}
 
-vote [name] [option]
-listpoll [name]
-help [command] // subject to change
+##########################
+#whisper -c --channel | -u --user [message]
+#note -c --channel | -u --user [note]
+#announce [message] 
+#remind [user/channel] [message] [time]
+#startpoll [name] [question] // subject to change
+#endpoll [name]
 
-quit
-
-unsub [botname]
-sub [botname] [botpassword]
+#vote [name] [option]
+#listpoll [name]
+#help [command] // subject to change
+#quit
+#unsub [botname]
+#sub [botname] [botpassword]
 

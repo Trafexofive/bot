@@ -12,7 +12,6 @@
 
 #include "../inc/Bot.hpp"
 
-
 // ################################## CHANNELS
 
 void Bot::joinChannel(const std::string &channelName) {
@@ -20,14 +19,12 @@ void Bot::joinChannel(const std::string &channelName) {
   _channelName = channelName;
 }
 
-void Bot::joinChannel() { sendMessageToServer("JOIN " + _channelName + "\r\n"); }
-
 void Bot::leaveChannel(const std::string &channelName) {
-  sendMessageToServer("PART " + channelName + "\r\n");
+    sendMessageToServer("PART " + channelName + "\r\n");
 }
 
 void Bot::listChannels() { sendMessageToServer("LIST\r\n"); }
 
 void Bot::setCurrentChannel(const std::string &channel) { _channelName = channel; }
 
-void Bot::setChannel(const std::string &channel) { _channelName = channel; }
+
