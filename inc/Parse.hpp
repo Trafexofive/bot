@@ -1,31 +1,41 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   main.cpp                                           :+:      :+:    :+:   */
+/*   Parsing.hpp                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: mlamkadm <mlamkadm@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/09/19 20:52:49 by mlamkadm          #+#    #+#             */
-/*   Updated: 2024/09/19 20:52:49 by mlamkadm         ###   ########.fr       */
+/*   Created: 2024/09/26 23:44:07 by mlamkadm          #+#    #+#             */
+/*   Updated: 2024/09/26 23:44:07 by mlamkadm         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../inc/Bot.hpp"
-#include "../inc/Reminder.hpp"
-#include <cstring>
+#ifndef PARSING_HPP
+#define PARSING_HPP
+
 #include <iostream>
-#include <sys/socket.h>
-#include <unistd.h>
+#include <string>
+#include <vector>
+#include "Macro.hpp"
 
-int main(int ac, char **av) {
+class Token {
+private:
+  std::string _token;
+  std::string _type;
+};
 
-  {
-    Bot bot;
-    bot.parseArgs(ac, av);
-    if (!bot.minimumAllowedArgs())
-        return 1;
-    bot.coreLoop();
-  }
 
-  return 0;
-}
+class Parser {
+private:
+  std::string _message;
+  std::string _command;
+  std::vector<std::string> _args;
+
+public:
+  std::vector<std::string> getTokens(const std::string &line);
+
+
+
+};
+
+#endif

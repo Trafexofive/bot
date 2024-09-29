@@ -16,8 +16,7 @@
 Bot::Bot()
     : _clientFdSocket(-1), _port(6667), _botName(""), _username(""),
       _nickname(""), _password(""), _channelName(""), _autoJoinChannel(false),
-      _serverAddress(""), _domainName(""), _uptime(0), _masters(""),
-      _debug(false) {}
+      _serverAddress(""), _domainName(""), _uptime(0), _debug(false) {}
 
 Bot::Bot(const Bot &other) { *this = other; }
 
@@ -52,17 +51,13 @@ bool Bot::processServerResponse() {
     translateServerResponse(buffer);
 
   } else if (bytesRead == 0) {
-    if (_debug) {
-      std::cout << "Server closed the connection: exiting ..." << std::endl;
-      disconnectFromServer();
-      return false;
-    }
+    std::cout << "Info: Server closed the connection: exiting ..." << std::endl;
+    disconnectFromServer();
+    return false;
   } else {
-    if (_debug) {
-      std::cerr << "Error reading from server: exiting ..." << std::endl;
-      disconnectFromServer();
-      return false;
-    }
+    std::cerr << "Error: Error reading from server: exiting ..." << std::endl;
+    disconnectFromServer();
+    return false;
   }
   return true;
 }

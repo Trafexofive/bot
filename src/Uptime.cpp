@@ -24,6 +24,7 @@ void Bot::initUptime() {
       std::this_thread::sleep_for(std::chrono::seconds(1));
       _uptime++;
       checkReminders();
+      // runChecks();
       if (checkRuntime(_runtime)) {
         break;
       }

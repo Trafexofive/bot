@@ -1,10 +1,10 @@
-server_address = localhost
-server_port = 3344
+server = localhost
+port = 3344
 ##########################
 password = alilepro
-bot_name = default_bot
-bot_user = mlamkadm
-bot_nick = bot
+botname = default_bot
+username = mlamkadm
+nickname = bot
 ##########################
 #bot_owner = master
 masters = { master admin cleverlord }
@@ -20,9 +20,42 @@ debug = false
 #runtime = 10
 ##########################
 
+auto :
+
+#automated functions with comands and args
+
+var time = "10:00"
+
+func initRoutine {
+whisper -c #Welcome -u me hello
+reminder -c #Welcome title getcoffeeafterfinishmornigrootine 45
+    
+}
+
+func test(args){
+initRoutine();
+whisper -c #Welcome -u me hello
+reminder -c #Welcome title getcoffeeafterfinishmornigrootine 45
+}
+
+func test(args){
+
+
+
+exec :
+
+initRoutine();
+
+
+
+
+
+
+
 #allow_commands = true
 #commands = {whisper remind help quit unsub sub uptime}
 
+#//advanced commands config
 ##########################
 #whisper -c --channel | -u --user [message]
 #note -c --channel | -u --user [note]

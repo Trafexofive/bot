@@ -14,6 +14,7 @@
 #define BOT_HPP
 
 #include "../inc/Reminder.hpp"
+#include <algorithm>
 #include <arpa/inet.h>
 #include <cstring>
 #include <ctime>
@@ -25,9 +26,6 @@
 #include <sys/socket.h>
 #include <unistd.h>
 #include <vector>
-#include <netdb.h>
-#include <arpa/inet.h>
-#include <algorithm>
 
 class Bot {
 private:
@@ -59,6 +57,9 @@ public:
   Bot &operator=(const Bot &other);
   ~Bot();
 
+  typedef std::vector<std::string>::iterator VecIt;
+  typedef std::vector<std::string>::const_iterator VecItconst;
+
   // Getters
   std::string getBotName() const;
   std::string getIP() const;
@@ -74,7 +75,7 @@ public:
   void disconnectFromServer();
 
   // core
-  int coreLoop();
+  bool coreLoop();
   void sendMessageToServer(const std::string &message);
   bool processServerResponse();
   void sendToAllChannels(const std::string &message);
@@ -86,7 +87,7 @@ public:
   void setServerAddress(const std::string &serverAddress);
   std::string getServerAddress() const;
   // auth
-  void registerBot();
+  bool registerBot();
   // command handler
   void handleCommand(const std::string &line);
   void handlePrivmsg(const std::string &response);
@@ -117,7 +118,9 @@ public:
   void parseArgs(int argc, char **argv);
   std::string loadCommands(const std::string &line);
   void handleServerAddr(const std::string &line);
-  std::string loadMasters(const std::string &line);
+  bool loadMasters(const std::string &line);
+
+  bool minimumAllowedArgs(void);
 
   void translateServerResponse(const std::string &response);
 
@@ -154,8 +157,10 @@ public:
 
   void help(const std::string &id);
   void info(const std::string &id);
+
+  bool handleConfigLine(const std::string &line);
 };
 
-std::string resolveIP(const std::string& hostname);
+std::string resolveIP(const std::string &hostname);
 
 #endif

@@ -47,6 +47,7 @@ void Bot::processUserCommand(const std::string &response) {
   std::string command = getCommand(response);
   std::cout << "Command: " << command << std::endl;
 
+
   int argCount = commandArgsCount(response);
 
   if (command.find("help") != std::string::npos)

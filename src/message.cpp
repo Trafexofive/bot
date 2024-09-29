@@ -27,6 +27,9 @@ void Bot::messageChannel(const std::string &message) {
 
 void Bot::messageUser(const std::string &user, const std::string &message) {
   sendMessageToServer("PRIVMSG " + user + " :" + message + "\r\n");
+  if (_debug) {
+    std::cout << message << std::endl;
+  }
 }
 
 void Bot::handlePrivmsg(const std::string &response) {
@@ -45,12 +48,12 @@ void Bot::handlePrivmsg(const std::string &response) {
 }
 
 void Bot::pingUser(const std::string &user) {
-    //remove @ from user
+  // remove @ from user
   if (user.empty()) {
     return;
 
   } else if (user[0] == '@') {
-      sendMessageToServer("PING" + user.substr(1) + "\r\n");
+    sendMessageToServer("PING" + user.substr(1) + "\r\n");
   }
 }
 void Bot::pingServer() {
@@ -68,6 +71,7 @@ void Bot::whisperUser(const std::string &user, const std::string &message) {
   messageUser(user, "Whisper from unknown user ->" + message);
 }
 
-void Bot::whisperChannel(const std::string &channel , const std::string &message) {
-    messageChannel(channel, "Whisper from unknown user ->" + message);
+void Bot::whisperChannel(const std::string &channel,
+                         const std::string &message) {
+  messageChannel(channel, "Whisper from unknown user ->" + message);
 }

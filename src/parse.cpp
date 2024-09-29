@@ -10,6 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 
+#include "../inc/Parse.hpp"
 #include "../inc/Bot.hpp"
 
 void Bot::parseArgs(int argc, char **argv) {
@@ -40,7 +41,7 @@ void Bot::parseArgs(int argc, char **argv) {
       _debug = true;
     } else if (arg == "-D" || arg == "--default") {
       _serverAddress = "localhost";
-      _port = 6667;
+      _port = 3344;
       _password = "";
       _botName = "defaultBot";
       _channelName = "#BornToCode";
@@ -72,51 +73,68 @@ void Bot::parseConfigFile(const std::string &filename) {
   while (std::getline(file, line)) {
     if (line.find("#") == 0 || line.empty())
       continue;
-    if (line.find("server_address") != std::string::npos) {
-      handleServerAddr(line);
-    } else if (line.find("port") != std::string::npos) {
-      _port = std::stoi(line.substr(line.find("=") + 2));
-    } else if (line.find("password") != std::string::npos) {
-      _password = line.substr(line.find("=") + 2);
-    } else if (line.find("channel") != std::string::npos) {
-      _channelName = line.substr(line.find("=") + 2);
-    } else if (line.find("bot_name") != std::string::npos) {
-      _botName = line.substr(line.find("=") + 2);
-    } else if (line.find("bot_user") != std::string::npos) {
-      _username = line.substr(line.find("=") + 2);
-    } else if (line.find("bot_nick") != std::string::npos) {
-      _nickname = line.substr(line.find("=") + 2);
-    } else if (line.find("debug") != std::string::npos) {
-      _debug = line.substr(line.find("=") + 2) == "true" ? true : false;
-    } else if (line.find("masters") != std::string::npos) {
-      _masters = loadMasters(line);
-    } else if (line.find("auto_join") != std::string::npos) {
-      _autoJoinChannel =
-          line.substr(line.find("=") + 2) == "true" ? true : false;
-    } else if (line.find("runtime") != std::string::npos) {
-      _runtime = std::stoi(line.substr(line.find("=") + 2));
-    } else if (line.find("runtime_bool") != std::string::npos)
-      _useRuntime = line.substr(line.find("=") + 2) == "true" ? true : false;
-    else {
+    if (!handleConfigLine(line)) {
+      std::cerr << "Warning: Can't Parse line at Index :" << line.find("=")
+                << std::endl;
+    } else {
       std::cerr << "Warning: Unknown configuration option at line: " << line
                 << std::endl;
     }
   }
 }
 
-std::string Bot::loadMasters(const std::string &line) {
-  if (line.find("{ ") == std::string::npos ||
-      line.find(" }") == std::string::npos) {
-    return "";
+bool Bot::handleConfigLine(const std::string &line) {
+  if (line[0] == '#')
+    return false;
+  if (line.find("server") == 0) {
+    handleServerAddr(line);
+  } else if (line.find("port") == 0) {
+    _port = std::stoi(line.substr(line.find("=") + 2));
+  } else if (line.find("password") == 0) {
+    _password = line.substr(line.find("=") + 2);
+  } else if (line.find("botname") == 0) {
+    _botName = line.substr(line.find("=") + 2);
+  } else if (line.find("channel") == 0) {
+    _channelName = line.substr(line.find("=") + 2);
+  } else if (line.find("username") == 0) {
+    _username = line.substr(line.find("=") + 2);
+  } else if (line.find("nickname") == 0) {
+    _nickname = line.substr(line.find("=") + 2);
+  } else if (line.find("autojoin") == 0) {
+    if (line.find("true") != std::string::npos)
+      _autoJoinChannel = true;
+    else
+      _autoJoinChannel = false;
+  } else if (line.find("debug") == 0) {
+    if (line.find("true") != std::string::npos)
+      _debug = true;
+    else
+      _debug = false;
+  } else {
+    return false;
   }
-  std::string _masters = line.substr(line.find("{") + 1, line.find("}") - 1);
-  _masters = _masters.substr(1, _masters.length() - 2);
-  return _masters;
+  return true;
 }
 
+// std::string Bot::loadMasters(const std::string &line) {
+//   if (line.find("{ ") == std::string::npos ||
+//       line.find(" }") == std::string::npos) {
+//     return "";
+//   }
+//   std::string _masters = line.substr(line.find("{") + 1, line.find("}") -
+//   1); _masters = _masters.substr(1, _masters.length() - 2); return
+//   _masters;
+// }
+
 bool Bot::isMaster(const std::string &user) {
-  if (_masters.find(user) != std::string::npos) {
-    return true;
-  }
-  return false;
+  // inplementation or vector list
+  return true;
+}
+
+bool Bot::minimumAllowedArgs() {
+  if (_serverAddress.empty() || _port == 0 || _password.empty() ||
+      _botName.empty() || _channelName.empty() || _username.empty() ||
+      _nickname.empty())
+    return false;
+  return true;
 }

@@ -13,20 +13,21 @@
 #include "../inc/Bot.hpp"
 #include "../inc/Reminder.hpp"
 
-int     Bot::coreLoop() {
-    
-  DisplayBotInfo();
-  initUptime();
+bool Bot::coreLoop() {
 
   if (!connectToServer()) {
-    std::cerr << "Failed to connect to server" << std::endl;
-    return 1;
+    return false;
   }
-  registerBot();
+  DisplayBotInfo();
+  if (!registerBot()) {
+    return false;
+  }
+  initUptime();
+
   while (1) {
-      if (!processServerResponse())
-        break;
+    if (!processServerResponse())
+      return false;
     sleep(1);
   }
-  return 0;
+  return true;
 }
