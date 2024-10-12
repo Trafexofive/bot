@@ -14,6 +14,7 @@
 #define BOT_HPP
 
 #include "../inc/Reminder.hpp"
+#include "../inc/env.hpp"
 #include <algorithm>
 #include <arpa/inet.h>
 #include <cstring>
@@ -29,26 +30,27 @@
 
 class Bot {
 private:
-  int _clientFdSocket;
-  int _port;
 
-  std::string _botName;
-  std::string _username;
-  std::string _nickname;
-  std::string _password;
-
-  std::string _channelName;
-  bool _autoJoinChannel;
-
-  std::string _serverAddress;
-  std::string _domainName;
+  Env _env;
+  // int _clientFdSocket;
+  // int _port;
+  //
+  // std::string _botName;
+  // std::string _username;
+  // std::string _nickname;
+  // std::string _password;
+  //
+  // std::string _channelName;
+  // bool _autoJoinChannel;
+  //
+  // std::string _serverAddress;
+  // std::string _domainName;
 
   time_t _uptime;
+
   std::vector<Reminder> _reminders;
   std::string _masters;
-  // std::vector<std::string> _masters;
   bool _debug;
-  bool _useRuntime;
   time_t _runtime;
 
 public:
@@ -161,6 +163,5 @@ public:
   bool handleConfigLine(const std::string &line);
 };
 
-std::string resolveIP(const std::string &hostname);
 
 #endif

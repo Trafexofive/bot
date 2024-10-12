@@ -13,23 +13,10 @@
 #include "../inc/Bot.hpp"
 #include "../inc/Reminder.hpp"
 
-Bot::Bot()
-    : _clientFdSocket(-1), _port(6667), _botName(""), _username(""),
-      _nickname(""), _password(""), _channelName(""), _autoJoinChannel(false),
-      _serverAddress(""), _domainName(""), _uptime(0), _debug(false) {}
 
 Bot::Bot(const Bot &other) { *this = other; }
 
 Bot &Bot::operator=(const Bot &other) {
-  if (this != &other) {
-    _clientFdSocket = other._clientFdSocket;
-    _botName = other._botName;
-    _channelName = other._channelName;
-    _nickname = other._nickname;
-    _password = other._password;
-    _uptime = other._uptime;
-  }
-  return *this;
 }
 
 Bot::~Bot() { disconnectFromServer(); }

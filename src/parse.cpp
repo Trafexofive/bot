@@ -40,13 +40,7 @@ void Bot::parseArgs(int argc, char **argv) {
     } else if (arg == "-d" || arg == "--debug") {
       _debug = true;
     } else if (arg == "-D" || arg == "--default") {
-      _serverAddress = "localhost";
-      _port = 3344;
-      _password = "";
-      _botName = "defaultBot";
-      _channelName = "#BornToCode";
-      _username = "joey";
-      _nickname = "joeyNick";
+        _env = Env();
     } else if (arg == "-i" || arg == "--interactive") {
       std::cout << "Interactive mode" << std::endl;
     } else if (arg == "-C" || arg == "--config-file") {
@@ -70,50 +64,22 @@ void Bot::handleServerAddr(const std::string &line) {
 void Bot::parseConfigFile(const std::string &filename) {
   std::ifstream file(filename);
   std::string line;
+  int index = 0;
   while (std::getline(file, line)) {
-    if (line.find("#") == 0 || line.empty())
+    if (line[0] == '#' || line.empty())
       continue;
-    if (!handleConfigLine(line)) {
-      std::cerr << "Warning: Can't Parse line at Index :" << line.find("=")
-                << std::endl;
+    else if (!handleConfigLine(line)) {
+      std::cerr << "Warning: Can't Parse line at Index :" << index << std::endl;
     } else {
       std::cerr << "Warning: Unknown configuration option at line: " << line
                 << std::endl;
     }
+    index++;
   }
 }
 
 bool Bot::handleConfigLine(const std::string &line) {
-  if (line[0] == '#')
-    return false;
-  if (line.find("server") == 0) {
-    handleServerAddr(line);
-  } else if (line.find("port") == 0) {
-    _port = std::stoi(line.substr(line.find("=") + 2));
-  } else if (line.find("password") == 0) {
-    _password = line.substr(line.find("=") + 2);
-  } else if (line.find("botname") == 0) {
-    _botName = line.substr(line.find("=") + 2);
-  } else if (line.find("channel") == 0) {
-    _channelName = line.substr(line.find("=") + 2);
-  } else if (line.find("username") == 0) {
-    _username = line.substr(line.find("=") + 2);
-  } else if (line.find("nickname") == 0) {
-    _nickname = line.substr(line.find("=") + 2);
-  } else if (line.find("autojoin") == 0) {
-    if (line.find("true") != std::string::npos)
-      _autoJoinChannel = true;
-    else
-      _autoJoinChannel = false;
-  } else if (line.find("debug") == 0) {
-    if (line.find("true") != std::string::npos)
-      _debug = true;
-    else
-      _debug = false;
-  } else {
-    return false;
-  }
-  return true;
+
 }
 
 // std::string Bot::loadMasters(const std::string &line) {

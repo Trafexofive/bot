@@ -14,7 +14,7 @@ auto_join = true
 channels = #clever 
 ##########################
 #interactive = false
-debug = false
+debug = true
 ##########################
 #runtime_bool = true
 #runtime = 10
@@ -27,6 +27,7 @@ auto :
 var time = "10:00"
 
 func initRoutine {
+sleep 10
 whisper -c #Welcome -u me hello
 reminder -c #Welcome title getcoffeeafterfinishmornigrootine 45
     
