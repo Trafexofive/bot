@@ -58,18 +58,18 @@ std::string Reminder::getTitle() const { return _title; }
 // reminder specific methodes
 
 void Bot::addReminderChannel(const std::string &title,
-                             const std::string &message, time_t reminderTime) {
+                             const std::string &message, time_t reminderTime, const std::string &channelName) {
   time_t startTime = getUptime();
   time_t endTime = startTime + reminderTime;
-  Reminder reminder(title, _channelName, message, endTime);
+  Reminder reminder(title, channelName, message, endTime);
   _reminders.push_back(reminder);
 }
 
 void Bot::addReminderUser(const std::string &title, const std::string &message,
-                          time_t reminderTime) {
+                          time_t reminderTime, const std::string &nickname) {
   time_t startTime = getUptime();
   time_t endTime = startTime + reminderTime;
-  Reminder reminder(title, _nickname, message, endTime);
+  Reminder reminder(title, nickname, message, endTime);
   _reminders.push_back(reminder);
 }
 
@@ -86,6 +86,7 @@ void Bot::SendReminder(Reminder &reminder) {
     messageChannel(reminder.getChannel(), "Message > " + reminder.getMessage());
   }
 }
+
 void Bot::checkReminders() {
   time_t currentTime = getUptime();
   for (std::vector<Reminder>::iterator it = _reminders.begin();

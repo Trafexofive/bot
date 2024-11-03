@@ -16,15 +16,19 @@
 
 void Bot::joinChannel(const std::string &channelName) {
   sendMessageToServer("JOIN " + channelName + "\r\n");
-  _channelName = channelName;
+  _env.addChannel(channelName);
 }
 
 void Bot::leaveChannel(const std::string &channelName) {
     sendMessageToServer("PART " + channelName + "\r\n");
 }
 
+void Bot::unsubFromChannel(const std::string &channelName) {
+    sendMessageToServer("PART " + channelName + "\r\n");
+    _env.removeChannel(channelName);
+}
+
 void Bot::listChannels() { sendMessageToServer("LIST\r\n"); }
 
-void Bot::setCurrentChannel(const std::string &channel) { _channelName = channel; }
 
 

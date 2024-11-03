@@ -11,15 +11,19 @@
 /* ************************************************************************** */
 
 #include "../inc/Bot.hpp"
+#include "../inc/env.hpp"
 
-void Bot::DisplayBotInfo() {
+void DisplayBotInfo(Env _env) {
   std::cout << "#############  BotInfo   #####################" << std::endl;
-  std::cout << "Server address: " << _serverAddress << std::endl;
-  std::cout << "Port: " << _port << std::endl;
-  std::cout << "Password: " << _password << std::endl;
-  std::cout << "Bot name: " << _botName << std::endl;
-  std::cout << "Auto-join Channel name: " << _channelName << std::endl;
-  std::cout << "Nickname: " << _nickname << std::endl;
+  std::cout << "Server address: " << _env.getServerAddress() << std::endl;
+  std::cout << "Port: " << _env.getPort() << std::endl;
+  std::cout << "Bot name: " << _env.getBotName() << std::endl;
+  std::cout << "Nickname: " << _env.getNickname() << std::endl;
+  std::cout << "Password: " << _env.getPassword() << std::endl;
+  std::cout << "Channel: " << _env.getChannelName() << std::endl;
+  std::cout << "Autojoin: " << _env.isAutoJoinChannel() << std::endl;
+  std::cout << "Debug: " << _env.isDebug() << std::endl;
+  std::cout << "Runtime: " << _env.isUseRuntime() << std::endl;
   std::cout << "##############################################" << std::endl;
 }
 
@@ -40,14 +44,10 @@ void Bot::help(const std::string &id) {
   }
 }
 
-void Bot::info(const std::string &id) {
-  if (isUser(id) && isMaster(id)) {
-    messageUser(id, "BotInfo> ");
-    messageUser(id, "Server address> " + _serverAddress);
-    messageUser(id, "Port> " + std::to_string(_port));
-    messageUser(id, "Password> " + _password);
-    messageUser(id, "Bot name> " + _botName);
-  } else {
-    messageChannel(id, "You do not have permission to use this command");
-  }
+void Bot::info(const std::string &id, Env _env) {
+    if (isMaster(id)) {
+        DisplayBotInfo(_env);
+    } else {
+        messageChannel(id, "You do not have permission to use this command");
+    }
 }

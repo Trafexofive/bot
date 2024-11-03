@@ -15,60 +15,51 @@
 // ################################## CONNECTIONS
 
 bool Bot::connectToServer() {
-  _clientFdSocket = socket(AF_INET, SOCK_STREAM, 0);
-  if (_clientFdSocket < 0) {
-    std::cerr << "Info: Error creating socket" << std::endl;
-    return false;
-  }
 
-  struct sockaddr_in server;
-  server.sin_family = AF_INET;
-  server.sin_port = htons(_port);
-  if (inet_pton(AF_INET, _serverAddress.c_str(), &server.sin_addr) <= 0) {
-    std::cerr << "Info: Invalid address" << std::endl;
-    close(_clientFdSocket);
-    return false;
-  }
+    _env.setClientFdSocket(socket(AF_INET, SOCK_STREAM, 0));
+    if (_env.getClientFdSocket() == -1) {
+        std::cerr << "Error: Can't create socket" << std::endl;
+        return false;
+    } else {
+        std::cout << "Info: Socket created" << std::endl;
+    }
 
- if (connect(_clientFdSocket, (struct sockaddr *)&server, sizeof(server)) <
-      0) {
-    std::cerr << "Info: Connection failed" << std::endl;
-    close(_clientFdSocket);
-    return false;
-  }
+    struct sockaddr_in server;
+    server.sin_family = AF_INET;
+    server.sin_port = htons(_env.getPort());
+    server.sin_addr.s_addr = inet_addr(_env.getServerAddress().c_str());
 
-  return true;
+    if (connect(_env.getClientFdSocket(), (struct sockaddr *)&server,
+                sizeof(server)) < 0) {
+        std::cerr << "Error: Connection failed" << std::endl;
+        return false;
+    } else {
+        std::cout << "Info: Connected to server" << std::endl;
+    }
+    
+    return true;
+
 }
 
 void Bot::disconnectFromServer() {
-  if (_clientFdSocket != -1) {
-    close(_clientFdSocket);
-    _clientFdSocket = -1;
-    std::cout << "Info: Disconnecting from server" << std::endl;
-  }
+    close(_env.getClientFdSocket());
+    if (_env.getClientFdSocket() == -1) {
+        std::cerr << "Error: Can't close socket" << std::endl;
+    } else {
+        std::cout << "Info: Disconnected from server" << std::endl;
+    }
 }
 
 bool    Bot::registerBot() {
-  sendMessageToServer("PASS " + _password + "\r\n");
-  sendMessageToServer("NICK " + _nickname + "\r\n");
-  sendMessageToServer("USER " + _username + " 0 * :" + _botName +
+  sendMessageToServer("PASS " + _env.getPassword() + "\r\n");
+  sendMessageToServer("NICK " + _env.getNickname() + "\r\n");
+  sendMessageToServer("USER " + _env.getUsername() + " 0 * :" + _env.getBotName() +
                       " IRC Bot\r\n");
   // if (!processServerResponse())
   //   return false;
-  if (_autoJoinChannel == true) {
-      std::cout << "Info: AutoJoin Active" << std::endl;
-    joinChannel(_channelName);
+  if (_env.isAutoJoinChannel()) {
+    joinChannel();
   }
   return true;
 }
 
-int Bot::getClientFdSocket() const { return _clientFdSocket; }
-int Bot::getPort() const { return _port; }
-std::string Bot::getServerAddress() const { return _serverAddress; }
-void Bot::setClientFdSocket(int clientFdSocket) {
-  _clientFdSocket = clientFdSocket;
-}
-void Bot::setPort(int port) { _port = port; }
-void Bot::setServerAddress(const std::string &serverAddress) {
-  _serverAddress = serverAddress;
-}

@@ -12,6 +12,8 @@
 
 #include "../inc/Bot.hpp"
 #include "../inc/Reminder.hpp"
+#include "../inc/env.hpp"
+#include <unistd.h>
 
 
 Bot::Bot(const Bot &other) { *this = other; }
@@ -21,17 +23,13 @@ Bot &Bot::operator=(const Bot &other) {
 
 Bot::~Bot() { disconnectFromServer(); }
 
-// ################################## GETTERS AND SETTERS
 
-std::string Bot::getBotName() const { return _botName; }
-
-void Bot::setBotName(const std::string &name) { _botName = name; }
 
 // ################################## CORE
 
 bool Bot::processServerResponse() {
   char buffer[1024];
-  int bytesRead = recv(_clientFdSocket, buffer, sizeof(buffer) - 1, 0);
+  int bytesRead = recv(_env.getClientFdSocket()  , buffer, sizeof(buffer) - 1, 0);
 
   if (bytesRead > 0) {
     buffer[bytesRead] = '\0';

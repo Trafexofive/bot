@@ -55,12 +55,12 @@ void Bot::processUserCommand(const std::string &response) {
   else if (command.find("whisper") != std::string::npos)
     whisperUser(user, getArgIndex(1, args));
   else if (command.find("info") != std::string::npos)
-    info(user);
+    info(user, _env);
   else if (command.find("uptime") != std::string::npos)
     DisplayUptime(user);
   else if (command.find("remind") != std::string::npos)
     addReminderUser(getArgIndex(1, args), getArgIndex(2, args),
-                    std::stoi(getArgIndex(3, args)));
+                    std::stoi(getArgIndex(3, args)), user);
 }
 
 std::string Bot::getCommandArgs(const std::string &response) {

@@ -22,7 +22,12 @@ void Bot::messageChannel(const std::string &channelName,
 }
 
 void Bot::messageChannel(const std::string &message) {
-  sendMessageToServer("PRIVMSG " + _channelName + " :" + message + "\r\n");
+  // overload for messaging all user registered to bot.
+
+  for (auto it = _env.getChannels().begin(); it != _env.getChannels().end();
+       it++) {
+    messageChannel(*it, message);
+  }
 }
 
 void Bot::messageUser(const std::string &user, const std::string &message) {
@@ -56,14 +61,17 @@ void Bot::pingUser(const std::string &user) {
     sendMessageToServer("PING" + user.substr(1) + "\r\n");
   }
 }
+
 void Bot::pingServer() {
-  sendMessageToServer("PING " + _serverAddress + "\r\n");
+  sendMessageToServer("PING " + _env.getServerAddress() + "\r\n");
 }
 
 void Bot::sendMessageToServer(const std::string &message) {
-  if (_clientFdSocket != -1) {
-    send(_clientFdSocket, message.c_str(), message.length(), 0);
-    std::cout << "Sending to server: " << message << std::endl;
+  if (_debug) {
+    std::cout << "Sending message: " << message << std::endl;
+  }
+  if (send(_env.getClientFdSocket(), message.c_str(), message.size(), 0) < 0) {
+    std::cerr << "Error: Can't send message to server" << std::endl;
   }
 }
 

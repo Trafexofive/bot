@@ -12,6 +12,7 @@
 
 #include "../inc/Parse.hpp"
 #include "../inc/Bot.hpp"
+#include "../inc/env.hpp"
 
 void Bot::parseArgs(int argc, char **argv) {
   if (argc <= 3) {
@@ -40,7 +41,7 @@ void Bot::parseArgs(int argc, char **argv) {
     } else if (arg == "-d" || arg == "--debug") {
       _debug = true;
     } else if (arg == "-D" || arg == "--default") {
-        _env = Env();
+      _env = Env();
     } else if (arg == "-i" || arg == "--interactive") {
       std::cout << "Interactive mode" << std::endl;
     } else if (arg == "-C" || arg == "--config-file") {
@@ -52,13 +53,21 @@ void Bot::parseArgs(int argc, char **argv) {
   }
 }
 
-void Bot::handleServerAddr(const std::string &line) {
-  _domainName = line.substr(line.find("=") + 2);
-  _serverAddress = resolveIP(_domainName);
-  if (_serverAddress.empty()) {
-    if (_debug)
-      std::cerr << "Error: Unable to resolve address" << std::endl;
+std::string resolveIP(const std::string &hostname) {
+  std::string ip;
+  struct hostent *he;
+  struct in_addr **addr_list;
+
+  // will only resolve the local host
+  if ((he = gethostbyname(hostname.c_str())) == NULL) {
+    return ip;
   }
+  return ip;
+}
+
+void Bot::handleServerAddr(const std::string &line) {
+  _env.setDomainName(line.substr(line.find("=") + 2));
+  _env.setServerAddress(resolveIP(_env.getDomainName()));
 }
 
 void Bot::parseConfigFile(const std::string &filename) {
@@ -78,29 +87,44 @@ void Bot::parseConfigFile(const std::string &filename) {
   }
 }
 
-bool Bot::handleConfigLine(const std::string &line) {
-
-}
-
-// std::string Bot::loadMasters(const std::string &line) {
-//   if (line.find("{ ") == std::string::npos ||
-//       line.find(" }") == std::string::npos) {
-//     return "";
-//   }
-//   std::string _masters = line.substr(line.find("{") + 1, line.find("}") -
-//   1); _masters = _masters.substr(1, _masters.length() - 2); return
-//   _masters;
-// }
-
-bool Bot::isMaster(const std::string &user) {
-  // inplementation or vector list
+bool Bot::loadChannels(const std::string &line) {
+  std::string channel = line.substr(line.find("=") + 2);
+  _env.addChannel(channel);
   return true;
 }
 
-bool Bot::minimumAllowedArgs() {
-  if (_serverAddress.empty() || _port == 0 || _password.empty() ||
-      _botName.empty() || _channelName.empty() || _username.empty() ||
-      _nickname.empty())
+bool Bot::handleConfigLine(const std::string &line) {
+  // switch case for each line
+
+  if (line.find("server") != std::string::npos) {
+    handleServerAddr(line);
+  } else if (line.find("port") != std::string::npos) {
+    _env.setPort(std::stoi(line.substr(line.find("=") + 2)));
+  } else if (line.find("botname") != std::string::npos) {
+    _env.setBotName(line.substr(line.find("=") + 2));
+  } else if (line.find("nickname") != std::string::npos) {
+    _env.setNickname(line.substr(line.find("=") + 2));
+  } else if (line.find("password") != std::string::npos) {
+    _env.setPassword(line.substr(line.find("=") + 2));
+  } else if (line.find("channel") != std::string::npos) {
+    _env.setChannelName(line.substr(line.find("=") + 2));
+  } else if (line.find("autojoin") != std::string::npos) {
+    _env.setAutoJoinChannel(true);
+  } else if (line.find("debug") != std::string::npos) {
+    _env.setDebug(true);
+  } else if (line.find("runtime") != std::string::npos) {
+    _env.setUseRuntime(true);
+  } else if (line.find("master") != std::string::npos) {
+    return loadMasters(line);
+  } else if (line.find("channel") != std::string::npos) {
+    return loadChannels(line);
+  } else {
     return false;
+  }
+  return true;
+}
+
+bool Bot::isMaster(const std::string &user) {
+  // inplementation or vector list
   return true;
 }

@@ -18,6 +18,7 @@
 #include <vector>
 
 class Env {
+
 private:
   std::string _serverAddress;
   std::string _domainName;
@@ -29,15 +30,20 @@ private:
   std::string _nickname;
   std::string _password;
 
+
   std::string _channelName;
 
   bool _autoJoinChannel;
   bool _debug;
+  bool _info;
+  bool _error;
+  bool _warning;
   bool _useRuntime;
 
   std::vector<std::string> _channels;
   std::vector<std::string> _masters;
 
+public:
   void handleServerAddr(const std::string &line);
   void handlePort(const std::string &line);
   void handleBotName(const std::string &line);
@@ -61,12 +67,20 @@ private:
   void setPassword(const std::string &password);
   std::string getChannelName() const;
   void setChannelName(const std::string &channelName);
+
+    std::vector<std::string> getChannels() const;
+
+
   bool isAutoJoinChannel() const;
   void setAutoJoinChannel(bool autoJoinChannel);
+
   bool isDebug() const;
   void setDebug(bool debug);
   bool isUseRuntime() const;
   void setUseRuntime(bool useRuntime);
+
+  void addChannel(const std::string &channel);
+  void removeChannel(const std::string &channel);
 
 public:
   Env();

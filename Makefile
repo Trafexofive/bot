@@ -16,7 +16,7 @@ SRC_DIR = src
 HEADER = inc/bot.hpp 
 OBJ_DIR = obj
 
-SRC = main.cpp bot.cpp parse.cpp connection.cpp display.cpp message.cpp channel.cpp core.cpp Reminder.cpp commands.cpp Uptime.cpp utils.cpp
+SRC = main.cpp bot.cpp parse.cpp connection.cpp display.cpp message.cpp channel.cpp core.cpp Reminder.cpp commands.cpp Uptime.cpp utils.cpp display.cpp
 
 OBJ = $(SRC:%.cpp=$(OBJ_DIR)/%.o)
 

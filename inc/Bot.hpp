@@ -14,6 +14,7 @@
 #define BOT_HPP
 
 #include "../inc/Reminder.hpp"
+#include "../inc/display.hpp"
 #include "../inc/env.hpp"
 #include <algorithm>
 #include <arpa/inet.h>
@@ -30,23 +31,10 @@
 
 class Bot {
 private:
-
   Env _env;
-  // int _clientFdSocket;
-  // int _port;
-  //
-  // std::string _botName;
-  // std::string _username;
-  // std::string _nickname;
-  // std::string _password;
-  //
-  // std::string _channelName;
-  // bool _autoJoinChannel;
-  //
-  // std::string _serverAddress;
-  // std::string _domainName;
 
   time_t _uptime;
+  int _tickrate;
 
   std::vector<Reminder> _reminders;
   std::string _masters;
@@ -98,13 +86,10 @@ public:
   void DisplayHelp();
   void DisplayDate();
   void DisplayUptime(const std::string &id);
-  void DisplayBotInfo();
   // channels
   void listChannels();
 
   void setChannel(const std::string &channel);
-  void setCurrentChannel(const std::string &channel);
-  void addChannel(const std::string &channel);
   void removeChannel(const std::string &channel);
   void messageChannel(const std::string &message);
   void messageChannel(const std::string &channelName,
@@ -116,6 +101,7 @@ public:
 
   // Parse & config
 
+  bool loadChannels(const std::string &line);
   void parseConfigFile(const std::string &filename);
   void parseArgs(int argc, char **argv);
   std::string loadCommands(const std::string &line);
@@ -141,9 +127,9 @@ public:
   time_t getUptime();
   void initUptime();
   void addReminderChannel(const std::string &title, const std::string &message,
-                          time_t reminderTime);
+                          time_t reminderTime, const std::string &channel);
   void addReminderUser(const std::string &title, const std::string &message,
-                       time_t reminderTime);
+                       time_t reminderTime, const std::string &nickname);
   void checkReminders();
   void SendReminder(Reminder &reminder);
   bool checkRuntime(time_t time);
@@ -158,10 +144,11 @@ public:
   void whisperChannel(const std::string &channel, const std::string &message);
 
   void help(const std::string &id);
-  void info(const std::string &id);
+  void info(const std::string &id, Env _env);
 
   bool handleConfigLine(const std::string &line);
-};
 
+  void unsubFromChannel(const std::string &channelName);
+};
 
 #endif
