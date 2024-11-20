@@ -30,5 +30,11 @@ void Bot::unsubFromChannel(const std::string &channelName) {
 
 void Bot::listChannels() { sendMessageToServer("LIST\r\n"); }
 
-
+void Bot::joinChannel()
+{
+    for (auto it = _env.getChannels().begin(); it != _env.getChannels().end(); it++)
+    {
+        sendMessageToServer("JOIN " + *it + "\r\n");
+    }
+}
 

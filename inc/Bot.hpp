@@ -14,7 +14,6 @@
 #define BOT_HPP
 
 #include "../inc/Reminder.hpp"
-#include "../inc/display.hpp"
 #include "../inc/env.hpp"
 #include <algorithm>
 #include <arpa/inet.h>
@@ -50,22 +49,13 @@ public:
   typedef std::vector<std::string>::iterator VecIt;
   typedef std::vector<std::string>::const_iterator VecItconst;
 
-  // Getters
-  std::string getBotName() const;
-  std::string getIP() const;
-  int getClientFdSocket() const;
-  int getPort() const;
-
-  // Setters
-  void setBotName(const std::string &name);
-  void setClientFdSocket(int clientFdSocket);
-  void setPort(int port);
-  // Bot-specific methods
+  // auth methods
   bool connectToServer();
   void disconnectFromServer();
 
   // core
   bool coreLoop();
+  // commands / messages
   void sendMessageToServer(const std::string &message);
   bool processServerResponse();
   void sendToAllChannels(const std::string &message);
@@ -74,8 +64,6 @@ public:
   void joinChannel();
   void leaveChannel(const std::string &channelName);
 
-  void setServerAddress(const std::string &serverAddress);
-  std::string getServerAddress() const;
   // auth
   bool registerBot();
   // command handler
@@ -108,7 +96,7 @@ public:
   void handleServerAddr(const std::string &line);
   bool loadMasters(const std::string &line);
 
-  bool minimumAllowedArgs(void);
+  bool minimumAllowedArgs();
 
   void translateServerResponse(const std::string &response);
 
@@ -144,7 +132,8 @@ public:
   void whisperChannel(const std::string &channel, const std::string &message);
 
   void help(const std::string &id);
-  void info(const std::string &id, Env _env);
+  void info(const std::string &id);
+  void DisplayBotInfo();
 
   bool handleConfigLine(const std::string &line);
 

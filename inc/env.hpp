@@ -30,7 +30,6 @@ private:
   std::string _nickname;
   std::string _password;
 
-
   std::string _channelName;
 
   bool _autoJoinChannel;
@@ -44,6 +43,11 @@ private:
   std::vector<std::string> _masters;
 
 public:
+  Env();
+  Env(const Env &other);
+  Env &operator=(const Env &other);
+  ~Env();
+
   void handleServerAddr(const std::string &line);
   void handlePort(const std::string &line);
   void handleBotName(const std::string &line);
@@ -68,8 +72,7 @@ public:
   std::string getChannelName() const;
   void setChannelName(const std::string &channelName);
 
-    std::vector<std::string> getChannels() const;
-
+  std::vector<std::string> getChannels() const;
 
   bool isAutoJoinChannel() const;
   void setAutoJoinChannel(bool autoJoinChannel);
@@ -79,13 +82,10 @@ public:
   bool isUseRuntime() const;
   void setUseRuntime(bool useRuntime);
 
-  void addChannel(const std::string &channel);
-  void removeChannel(const std::string &channel);
-
-public:
-  Env();
   void getSysUsername();
   std::string resolveIP(const std::string &hostname);
+  void addChannel(const std::string &channel);
+  void removeChannel(const std::string &channel);
 };
 
 #endif

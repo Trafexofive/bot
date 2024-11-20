@@ -16,11 +16,11 @@ SRC_DIR = src
 HEADER = inc/bot.hpp 
 OBJ_DIR = obj
 
-SRC = main.cpp bot.cpp parse.cpp connection.cpp display.cpp message.cpp channel.cpp core.cpp Reminder.cpp commands.cpp Uptime.cpp utils.cpp display.cpp
+SRC = main.cpp bot.cpp parse.cpp connection.cpp display.cpp message.cpp channel.cpp core.cpp Reminder.cpp commands.cpp Uptime.cpp utils.cpp display.cpp Environment.cpp
 
 OBJ = $(SRC:%.cpp=$(OBJ_DIR)/%.o)
 
-FLAGS = -Wall -Wextra #-Werror
+FLAGS = -Wall -Wextra -Werror
 
 CPP98 = -std=c++98
 

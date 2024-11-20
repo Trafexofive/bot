@@ -15,10 +15,20 @@
 #include "../inc/env.hpp"
 #include <unistd.h>
 
+Bot::Bot() : _env(Env()), _uptime(0), _tickrate(1000), _debug(false), _runtime(0) {}
+
 
 Bot::Bot(const Bot &other) { *this = other; }
 
 Bot &Bot::operator=(const Bot &other) {
+    _env = other._env;
+    _uptime = other._uptime;
+    _tickrate = other._tickrate;
+    _reminders = other._reminders;
+    _masters = other._masters;
+    _debug = other._debug;
+    _runtime = other._runtime;
+    return *this;
 }
 
 Bot::~Bot() { disconnectFromServer(); }

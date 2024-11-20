@@ -12,7 +12,6 @@
 
 #include "../inc/Parse.hpp"
 #include "../inc/Bot.hpp"
-#include "../inc/env.hpp"
 
 void Bot::parseArgs(int argc, char **argv) {
   if (argc <= 3) {
@@ -56,7 +55,6 @@ void Bot::parseArgs(int argc, char **argv) {
 std::string resolveIP(const std::string &hostname) {
   std::string ip;
   struct hostent *he;
-  struct in_addr **addr_list;
 
   // will only resolve the local host
   if ((he = gethostbyname(hostname.c_str())) == NULL) {
@@ -125,6 +123,60 @@ bool Bot::handleConfigLine(const std::string &line) {
 }
 
 bool Bot::isMaster(const std::string &user) {
-  // inplementation or vector list
+    for (auto it = _env.getChannels().begin(); it != _env.getChannels().end();
+         it++) {
+        if (user == *it)
+        return true;
+    }
+  return false;
+}
+
+bool Bot::isUser(const std::string &user) {
+  for (auto it = _env.getChannels().begin(); it != _env.getChannels().end();
+       it++) {
+    if (user == *it)
+      return true;
+  }
+  return false;
+}
+
+bool Bot::isChannel(const std::string &channel) {
+  if (channel[0] == '#')
+    return true;
+  return false;
+}
+
+bool Bot::isCommand(const std::string &line) {
+  if (line.find("!cmd") != std::string::npos)
+    return true;
+  return false;
+}
+
+std::string Bot::getCommand(const std::string &response) {
+  std::string command = response.substr(response.find("!cmd") + 5);
+  command = command.substr(0, command.find(" "));
+  // command = command.substr(0, command.size() - 1);
+  return command;
+}
+
+std::string Bot::getCommandArgs(const std::string &response) {
+  // find /cmd then add first word after /cmd to vector
+
+  std::string args;
+
+  if (response.find("!cmd") != std::string::npos) {
+    args = response.substr(response.find("!cmd") + 5);
+  }
+  return args;
+}
+
+
+bool Bot::minimumAllowedArgs() {
+  if (_env.getServerAddress().empty() || _env.getDomainName().empty() ||
+      _env.getPort() == 0 || _env.getBotName().empty() ||
+      _env.getNickname().empty() || _env.getPassword().empty() ||
+      _env.getChannelName().empty()) {
+    return false;
+  }
   return true;
 }

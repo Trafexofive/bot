@@ -11,9 +11,8 @@
 /* ************************************************************************** */
 
 #include "../inc/Bot.hpp"
-#include "../inc/env.hpp"
 
-void DisplayBotInfo(Env _env) {
+void Bot::DisplayBotInfo() {
   std::cout << "#############  BotInfo   #####################" << std::endl;
   std::cout << "Server address: " << _env.getServerAddress() << std::endl;
   std::cout << "Port: " << _env.getPort() << std::endl;
@@ -44,9 +43,9 @@ void Bot::help(const std::string &id) {
   }
 }
 
-void Bot::info(const std::string &id, Env _env) {
+void Bot::info(const std::string &id) {
     if (isMaster(id)) {
-        DisplayBotInfo(_env);
+        DisplayBotInfo();
     } else {
         messageChannel(id, "You do not have permission to use this command");
     }

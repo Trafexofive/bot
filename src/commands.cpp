@@ -48,14 +48,12 @@ void Bot::processUserCommand(const std::string &response) {
   std::cout << "Command: " << command << std::endl;
 
 
-  int argCount = commandArgsCount(response);
-
   if (command.find("help") != std::string::npos)
     help(user);
   else if (command.find("whisper") != std::string::npos)
     whisperUser(user, getArgIndex(1, args));
   else if (command.find("info") != std::string::npos)
-    info(user, _env);
+    info(user);
   else if (command.find("uptime") != std::string::npos)
     DisplayUptime(user);
   else if (command.find("remind") != std::string::npos)
@@ -67,7 +65,6 @@ std::string Bot::getCommandArgs(const std::string &response) {
   // find /cmd then add first word after /cmd to vector
 
   std::string args;
-  int argCount = commandArgsCount(response);
 
   if (response.find("!cmd") != std::string::npos) {
     args = response.substr(response.find("!cmd") + 5);
